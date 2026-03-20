@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useGetBuybackRates } from "@workspace/api-client-react";
 import { Layout } from "@/components/Layout";
 import { formatIsk } from "@/lib/utils";
-import { ArrowLeft, Copy, CheckCircle2, TrendingDown, TrendingUp, DollarSign, Database, Server, ArrowRight } from "lucide-react";
+import { ArrowLeft, Copy, CheckCircle2, TrendingDown, TrendingUp, DollarSign, Database, Server } from "lucide-react";
 import type { AppraisalResult } from "@workspace/api-client-react";
 
 export default function AppraisalResultPage() {
@@ -133,19 +133,6 @@ export default function AppraisalResultPage() {
               <span className="text-accent">{formatIsk(profitISK)}</span>
             </div>
           </div>
-        </motion.div>
-
-        <motion.div variants={itemVariants} className="flex justify-center">
-          <Link
-            href={`/buyback?${searchString}`}
-            className="group relative px-10 py-4 font-display font-bold uppercase tracking-widest text-sm bg-primary/10 text-primary border border-primary/40 rounded-xl hover:bg-primary hover:text-primary-foreground hover:shadow-[0_0_20px_rgba(218,165,32,0.4)] transition-all duration-300 overflow-hidden inline-flex items-center gap-3"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/20 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-            <span className="relative flex items-center gap-2">
-              Proceed to Buyback Contract
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </Link>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
