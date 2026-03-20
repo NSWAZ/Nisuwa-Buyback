@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 import Home from "@/pages/Home";
 import AppraisalResult from "@/pages/AppraisalResult";
+import Buyback from "@/pages/Buyback";
 import NotFound from "@/pages/not-found";
 
 // Initialize React Query Client with basic caching for config rates
@@ -22,6 +23,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/appraisal" component={AppraisalResult} />
+      <Route path="/buyback" component={Buyback} />
       <Route component={NotFound} />
     </Switch>
   );
