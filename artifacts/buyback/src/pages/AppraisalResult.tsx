@@ -35,15 +35,15 @@ export default function AppraisalResultPage() {
           <div className="w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center mb-6 border border-destructive/30">
             <Server className="w-10 h-10 text-destructive" />
           </div>
-          <h2 className="text-3xl font-display font-bold text-destructive mb-4 drop-shadow-[0_0_10px_rgba(244,63,94,0.5)]">Corrupt Data Stream</h2>
+          <h2 className="text-3xl font-display font-bold text-destructive mb-4 drop-shadow-[0_0_10px_rgba(244,63,94,0.5)]">Invalid Link</h2>
           <p className="text-muted-foreground font-mono max-w-md mx-auto mb-8">
-            The appraisal payload could not be decoded. The transmission may have been interrupted or the link is invalid.
+            This appraisal link is invalid or has expired. Please create a new appraisal.
           </p>
           <Link 
             href="/" 
             className="px-6 py-3 bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-secondary-border rounded-lg transition-colors font-mono uppercase tracking-widest text-sm inline-flex items-center gap-2"
           >
-            <ArrowLeft className="w-4 h-4" /> Return to Input
+            <ArrowLeft className="w-4 h-4" /> New Appraisal
           </Link>
         </div>
       </Layout>
@@ -94,7 +94,7 @@ export default function AppraisalResultPage() {
           </Link>
           <div className="text-xs font-mono text-muted-foreground border border-border/50 px-4 py-2 rounded-lg bg-card/30 backdrop-blur flex items-center gap-2">
             <Database className="w-3.5 h-3.5 text-primary" />
-            Data Timestamp: {new Date(parsedData.timestamp).toLocaleString()}
+            {new Date(parsedData.timestamp).toLocaleString()}
           </div>
         </motion.div>
 
@@ -102,7 +102,7 @@ export default function AppraisalResultPage() {
         <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-card/40 backdrop-blur-md border border-border/50 rounded-2xl p-6 relative overflow-hidden group hover:border-border transition-colors">
             <div className="text-muted-foreground font-mono text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-emerald-500" /> Jita Sell Value
+              <TrendingUp className="w-4 h-4 text-emerald-500" /> Market Value
             </div>
             <div className="text-2xl md:text-3xl font-bold font-display tracking-tight text-white/90">
               {formatIsk(parsedData.totalValue)}
@@ -123,13 +123,13 @@ export default function AppraisalResultPage() {
 
           <div className="bg-card/40 backdrop-blur-md border border-border/50 rounded-2xl p-6 relative overflow-hidden">
             <div className="text-muted-foreground font-mono text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
-              <TrendingDown className="w-4 h-4 text-accent" /> Effective Rate
+              <TrendingDown className="w-4 h-4 text-accent" /> Average Rate
             </div>
             <div className="text-2xl md:text-3xl font-bold font-display tracking-tight text-white/90">
               {effectiveRate.toFixed(1)}%
             </div>
             <div className="text-xs text-muted-foreground/70 mt-2 font-mono flex justify-between items-center">
-              <span>Cartel Margin:</span>
+              <span>Margin:</span>
               <span className="text-accent">{formatIsk(profitISK)}</span>
             </div>
           </div>
@@ -152,7 +152,7 @@ export default function AppraisalResultPage() {
           {/* Main Table */}
           <motion.div variants={itemVariants} className="lg:col-span-3 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-display font-bold uppercase tracking-wider text-white/90">Itemized Breakdown</h3>
+              <h3 className="text-xl font-display font-bold uppercase tracking-wider text-white/90">Item Details</h3>
               <button
                 onClick={handleCopy}
                 className="flex items-center gap-2 px-5 py-2.5 bg-secondary/80 hover:bg-secondary text-secondary-foreground border border-secondary-border rounded-xl text-sm font-mono transition-all hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] active:scale-95"
@@ -167,11 +167,11 @@ export default function AppraisalResultPage() {
                 <table className="w-full text-sm text-left">
                   <thead className="text-xs text-muted-foreground/80 font-mono uppercase bg-black/60 border-b border-border/60">
                     <tr>
-                      <th className="px-6 py-4 font-semibold">Asset ID / Classification</th>
-                      <th className="px-6 py-4 font-semibold text-right">Units</th>
-                      <th className="px-6 py-4 font-semibold text-right">Unit Price (Jita)</th>
-                      <th className="px-6 py-4 font-semibold text-center">Appraisal %</th>
-                      <th className="px-6 py-4 font-semibold text-right text-primary">Subtotal</th>
+                      <th className="px-6 py-4 font-semibold">Item</th>
+                      <th className="px-6 py-4 font-semibold text-right">Qty</th>
+                      <th className="px-6 py-4 font-semibold text-right">Jita Price</th>
+                      <th className="px-6 py-4 font-semibold text-center">Rate</th>
+                      <th className="px-6 py-4 font-semibold text-right text-primary">Buyback</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border/30 font-mono">
@@ -216,7 +216,7 @@ export default function AppraisalResultPage() {
                     <span className="font-bold text-white/90">{(ratesData.defaultRate * 100).toFixed(0)}%</span>
                   </div>
                   <div className="space-y-3 pt-1">
-                    <div className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Specific Classifications</div>
+                    <div className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">By Category</div>
                     {ratesData.rates.map((rate, i) => (
                       <div key={i} className="flex justify-between items-center group">
                         <span className="text-muted-foreground group-hover:text-foreground transition-colors">{rate.groupName}</span>

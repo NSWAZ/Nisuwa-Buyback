@@ -39,7 +39,7 @@ export default function Home() {
             Contract <span className="text-primary drop-shadow-[0_0_15px_rgba(218,165,32,0.5)]">Appraisal</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-mono">
-            Paste your inventory listing below to receive an instant network-verified Nisuwa Cartel buyback valuation.
+            Paste your items below to get Jita prices and a buyback quote.
           </p>
         </div>
 
@@ -50,7 +50,7 @@ export default function Home() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2 text-primary font-mono text-sm uppercase tracking-widest">
                 <FileText className="w-4 h-4" />
-                <span>Data Stream Input</span>
+                <span>Item List</span>
               </div>
               <div className="text-xs text-muted-foreground font-mono">
                 Format: [Item Name] [Quantity]
@@ -68,7 +68,7 @@ export default function Home() {
             <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-xs font-mono text-muted-foreground/70 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4" />
-                Prices synced with Jita 4-4 Market Data
+                Prices from Jita 4-4
               </div>
               
               <button
@@ -85,7 +85,7 @@ export default function Home() {
                     </>
                   ) : (
                     <>
-                      Initialize Appraisal
+                      Appraise Items
                       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
@@ -101,8 +101,8 @@ export default function Home() {
               >
                 <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-bold uppercase tracking-wider mb-1">Transmission Error</div>
-                  <div className="opacity-90">{appraise.error?.message || "An unknown error occurred while contacting the trade network."}</div>
+                  <div className="font-bold uppercase tracking-wider mb-1">Error</div>
+                  <div className="opacity-90">{appraise.error?.message || "Something went wrong. Please try again."}</div>
                 </div>
               </motion.div>
             )}
