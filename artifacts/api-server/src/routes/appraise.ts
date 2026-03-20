@@ -5,6 +5,8 @@ import {
   resolveTypeIds,
   getJitaPrices,
   getTypeInfo,
+  isSleeperComponent,
+  getNpcBuyPrice,
 } from "../lib/eve-api.js";
 import { getBuybackRate } from "../lib/buyback-rates.js";
 
@@ -52,6 +54,20 @@ router.post("/appraise", async (req, res): Promise<void> => {
     }
   }
 
+  const sleeperTypeIds = resolvedTypeIds.filter((id) => {
+    const info = typeInfoMap.get(id);
+    return info && isSleeperComponent(info.marketGroupName);
+  });
+  const npcPricePromises = sleeperTypeIds.map(async (id) => {
+    const price = await getNpcBuyPrice(id);
+    return [id, price] as const;
+  });
+  const npcPriceResults = await Promise.all(npcPricePromises);
+  const npcPriceMap = new Map<number, number>();
+  for (const [id, price] of npcPriceResults) {
+    if (price !== null) npcPriceMap.set(id, price);
+  }
+
   for (const item of parsedItems) {
     const typeId = nameToId.get(item.name);
     if (!typeId) {
@@ -68,12 +84,18 @@ router.post("/appraise", async (req, res): Promise<void> => {
       continue;
     }
 
-    const priceData = prices.get(typeId);
-    const pricePerUnit = priceData ? priceData.sell.min : 0;
-    const totalPrice = pricePerUnit * item.quantity;
-
     const info = typeInfoMap.get(typeId);
     const marketGroupName = info?.marketGroupName ?? "Unknown";
+
+    let pricePerUnit: number;
+    if (isSleeperComponent(marketGroupName) && npcPriceMap.has(typeId)) {
+      pricePerUnit = npcPriceMap.get(typeId)!;
+    } else {
+      const priceData = prices.get(typeId);
+      pricePerUnit = priceData ? priceData.sell.min : 0;
+    }
+
+    const totalPrice = pricePerUnit * item.quantity;
     const buybackRate = getBuybackRate(marketGroupName);
     const buybackPrice = totalPrice * buybackRate;
 

@@ -50,13 +50,22 @@ artifacts-monorepo/
 
 ### Buyback Rates (GET /api/buyback/rates)
 - Fixed rates defined in `artifacts/api-server/src/lib/buyback-rates.ts`
-- Categories: Minerals (90%), Ore (85%), Ships (65%), Modules (70%), etc.
+- Categories: Sleeper Components (100% NPC Buy), Minerals (90%), Ore (85%), Ships (65%), Modules (70%), etc.
 - Default rate: 90%
+- **Matching is order-dependent** — more specific categories (e.g., Sleeper Components) must come before broader ones (e.g., Commodity) in the BUYBACK_RATES array
+
+### Sleeper Components (NPC Buy Pricing)
+- Items in the "Sleeper Components" market group use NPC Buy prices instead of Jita sell
+- NPC orders are identified by `duration >= 365` in ESI `/markets/{region_id}/orders/` (players max 90 days)
+- Queries The Forge region (10000002) for buy orders, filters NPC-only, takes highest price
+- Buyback rate: 100% of NPC Buy price
+- Frontend tooltip shows "Sleeper Components (NPC Buy) → 100%"
 
 ### Caching
 - In-memory TTL cache (`artifacts/api-server/src/lib/cache.ts`)
 - Type ID lookups: 24h cache
-- Jita prices: 5min cache
+- Jita prices: 1h cache
+- NPC Buy prices: 30 day cache (NPC prices rarely change)
 - Market group names: 24h cache
 - Type info: 24h cache
 

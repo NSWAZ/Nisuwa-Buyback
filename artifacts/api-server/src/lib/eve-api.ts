@@ -5,8 +5,9 @@ const ESI_BASE = "https://esi.evetech.net/latest";
 const FUZZWORK_BASE = "https://market.fuzzwork.co.uk/aggregates";
 
 const typeIdCache = new SimpleCache<number>(86400);
-const priceCache = new SimpleCache<FuzzworkPriceData>(300);
+const priceCache = new SimpleCache<FuzzworkPriceData>(3600);
 const typeInfoCache = new SimpleCache<TypeInfo>(86400);
+const npcPriceCache = new SimpleCache<number>(2592000);
 
 export interface FuzzworkPriceData {
   buy: { max: number; min: number; avg: number; volume: number };
@@ -191,6 +192,61 @@ export async function getTypeInfo(typeId: number): Promise<TypeInfo | null> {
     logger.error({ err, typeId }, "ESI type info error");
     return null;
   }
+}
+
+const SLEEPER_COMPONENT_MARKER = "Sleeper Components";
+
+export function isSleeperComponent(marketGroupName: string): boolean {
+  return marketGroupName.includes(SLEEPER_COMPONENT_MARKER);
+}
+
+export async function getNpcBuyPrice(typeId: number): Promise<number | null> {
+  const cacheKey = `npc-buy-${typeId}`;
+  const cached = npcPriceCache.get(cacheKey);
+  if (cached !== undefined) return cached;
+
+  const regionId = 10000002;
+  let highestNpcBuy = 0;
+
+  try {
+    let page = 1;
+    let hasMore = true;
+    while (hasMore) {
+      const url = `${ESI_BASE}/markets/${regionId}/orders/?datasource=tranquility&order_type=buy&type_id=${typeId}&page=${page}`;
+      const resp = await fetch(url);
+      if (!resp.ok) {
+        if (resp.status === 404) break;
+        logger.warn({ status: resp.status, typeId }, "ESI market orders fetch failed");
+        break;
+      }
+      const orders = (await resp.json()) as Array<{
+        price: number;
+        duration: number;
+        is_buy_order: boolean;
+        volume_remain: number;
+      }>;
+
+      for (const order of orders) {
+        if (order.duration >= 365 && order.is_buy_order && order.price > highestNpcBuy) {
+          highestNpcBuy = order.price;
+        }
+      }
+
+      const totalPages = parseInt(resp.headers.get("x-pages") ?? "1", 10);
+      hasMore = page < totalPages;
+      page++;
+    }
+  } catch (err) {
+    logger.error({ err, typeId }, "ESI NPC buy price fetch error");
+    return null;
+  }
+
+  if (highestNpcBuy > 0) {
+    npcPriceCache.set(cacheKey, highestNpcBuy);
+    return highestNpcBuy;
+  }
+
+  return null;
 }
 
 const marketGroupNameCache = new SimpleCache<string>(86400);

@@ -6,6 +6,7 @@ export interface BuybackRateConfig {
 export const DEFAULT_BUYBACK_RATE = 0.9;
 
 export const BUYBACK_RATES: BuybackRateConfig[] = [
+  { groupName: "Sleeper Components", rate: 1.00 },
   { groupName: "Minerals", rate: 0.90 },
   { groupName: "Ore", rate: 0.85 },
   { groupName: "Ice Product", rate: 0.85 },

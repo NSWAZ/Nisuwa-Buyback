@@ -1,4 +1,5 @@
 const RATE_KEYWORDS: Array<{ keyword: string; label: string; rate: number }> = [
+  { keyword: "sleeper components", label: "Sleeper Components (NPC Buy)", rate: 100 },
   { keyword: "minerals", label: "Minerals", rate: 90 },
   { keyword: "ore", label: "Ore", rate: 85 },
   { keyword: "ice product", label: "Ice Product", rate: 85 },
