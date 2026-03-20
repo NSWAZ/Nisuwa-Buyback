@@ -3,13 +3,17 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Nisuwa Cartel Buyback API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: appraisal
+    description: Item appraisal operations
+  - name: buyback
+    description: Buyback configuration
 paths:
   /healthz:
     get:
@@ -24,6 +28,44 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /appraise:
+    post:
+      operationId: appraiseItems
+      tags: [appraisal]
+      summary: Appraise items from pasted text
+      description: Parses EVE Online item text, resolves type IDs, fetches Jita prices, and returns appraisal results
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppraiseRequest"
+      responses:
+        "200":
+          description: Appraisal result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppraisalResult"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /buyback/rates:
+    get:
+      operationId: getBuybackRates
+      tags: [buyback]
+      summary: Get buyback rate configuration
+      description: Returns the current buyback rates by market group
+      responses:
+        "200":
+          description: Buyback rates
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BuybackRates"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +75,97 @@ components:
           type: string
       required:
         - status
-
+    AppraiseRequest:
+      type: object
+      properties:
+        items:
+          type: string
+          description: Raw item text pasted from EVE Online client
+      required:
+        - items
+    AppraisalItem:
+      type: object
+      properties:
+        typeName:
+          type: string
+        typeId:
+          type: integer
+        quantity:
+          type: integer
+        pricePerUnit:
+          type: number
+          format: double
+        totalPrice:
+          type: number
+          format: double
+        marketGroupName:
+          type: string
+        buybackRate:
+          type: number
+          format: double
+          description: Buyback rate (0-1) for this item category
+        buybackPrice:
+          type: number
+          format: double
+          description: Total price after buyback rate applied
+      required:
+        - typeName
+        - typeId
+        - quantity
+        - pricePerUnit
+        - totalPrice
+        - marketGroupName
+        - buybackRate
+        - buybackPrice
+    AppraisalResult:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AppraisalItem"
+        totalValue:
+          type: number
+          format: double
+        totalBuybackValue:
+          type: number
+          format: double
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - items
+        - totalValue
+        - totalBuybackValue
+        - timestamp
+    BuybackRateEntry:
+      type: object
+      properties:
+        groupName:
+          type: string
+        rate:
+          type: number
+          format: double
+      required:
+        - groupName
+        - rate
+    BuybackRates:
+      type: object
+      properties:
+        defaultRate:
+          type: number
+          format: double
+        rates:
+          type: array
+          items:
+            $ref: "#/components/schemas/BuybackRateEntry"
+      required:
+        - defaultRate
+        - rates
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error

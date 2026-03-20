@@ -1,0 +1,12 @@
+packages:
+  "lz-string": "Compress and encode JSON data for URL state sharing"
+  "framer-motion": "Smooth entry animations and micro-interactions for sci-fi feel"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility function to efficiently merge Tailwind CSS classes"
+images:
+  - path: "artifacts/buyback/public/images/hero-bg.png"
+    description: "Deep space nebula with a massive industrial space station, dark atmospheric cinematic lighting, glowing cyan and amber accents, high-tech sci-fi aesthetic, Eve Online style"
+    aspect_ratio: "16:9"
+notes:
+  - "Appraisal data is encoded into the URL using LZString so users can share links without needing a database to persist the results."
+  - "The application enforces a dark sci-fi industrial aesthetic globally."
