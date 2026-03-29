@@ -70,7 +70,7 @@ function BuybackInput() {
             <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-xs font-mono text-muted-foreground/70 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4" />
-                Prices from Jita 4-4
+                카테고리별 적용 가격이 다를 수 있습니다
               </div>
 
               <button
