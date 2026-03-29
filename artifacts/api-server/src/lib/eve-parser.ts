@@ -54,10 +54,5 @@ function parseLine(line: string): ParsedItem | null {
     }
   }
 
-  const name = line.trim();
-  if (name) {
-    return { name, quantity: 1 };
-  }
-
   return null;
 }

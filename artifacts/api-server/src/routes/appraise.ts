@@ -21,7 +21,7 @@ router.post("/appraise", async (req, res): Promise<void> => {
 
   const parsedItems = parseEveItemText(parsed.data.items);
   if (parsedItems.length === 0) {
-    res.status(400).json({ error: "No valid items found in input" });
+    res.status(400).json({ error: "인식 가능한 아이템이 없습니다. EVE 인벤토리에서 복사(Ctrl+C)한 텍스트를 붙여넣어 주세요." });
     return;
   }
 
